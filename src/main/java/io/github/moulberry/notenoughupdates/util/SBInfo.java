@@ -282,6 +282,21 @@ public class SBInfo {
 		}
 		this.mode = location;
 	}
+	
+	/**
+	 * @return the current location as displayed on the scoreboard
+	 */
+	public @NotNull String getScoreboardLocation() {
+		return location;
+	}
+
+	/**
+	 * @return the previous location as displayed on the scoreboard
+	 * @see #getScoreboardLocation()
+	 */
+	public @NotNull String getLastScoreboardLocation() {
+		return lastLocation;
+	}
 
 	private static final String profilePrefix = "\u00a7r\u00a7e\u00a7lProfile: \u00a7r\u00a7a";
 	private static final String skillsPrefix = "\u00a7r\u00a7e\u00a7lSkills: \u00a7r\u00a7a";
@@ -412,6 +427,7 @@ public class SBInfo {
 						if (!l.equals(location)) {
 							new ScoreboardLocationChangeListener(location, l);
 						}
+						lastLocation = location;
 						location = l;
 						break;
 					}
