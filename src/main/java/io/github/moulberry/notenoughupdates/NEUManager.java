@@ -381,8 +381,6 @@ public class NEUManager {
 				}
 			}
 		} catch (Exception e) {
-			System.out.println("internalName is : " + internalName);
-			e.printStackTrace();
 		}
 	}
 
