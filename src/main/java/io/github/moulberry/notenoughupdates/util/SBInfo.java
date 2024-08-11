@@ -305,6 +305,7 @@ public class SBInfo {
 		return lastLocation;
 	}
 
+    private static final String profilePrefix = "\u00a7r\u00a7e\u00a7lProfile: \u00a7r\u00a7a";
 	private static final String skillsPrefix = "\u00a7r\u00a7e\u00a7lSkills: \u00a7r\u00a7a";
 	private static final String completedFactionQuests =
 		"\u00a7r \u00a7r\u00a7a(?!(Paul|Finnegan|Aatrox|Cole|Diana|Diaz|Foxy|Marina)).*";
@@ -330,11 +331,27 @@ public class SBInfo {
 			lastMayorUpdate = currentTime;
 		}
 		List<String> profileData = TablistAPI.getWidgetLines(TablistAPI.WidgetNames.PROFILE);
-		if (!profileData.isEmpty()) {
-			String newProfile = Utils.cleanColour(profileData.get(0)).split(" ")[1];
-			if (Character.isLowerCase(newProfile.charAt(0)))
-				newProfile = new StringBuilder(newProfile).reverse().toString();
+		try {
+			for (NetworkPlayerInfo info : Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap()) {
+				String name = Minecraft.getMinecraft().ingameGUI.getTabList().getPlayerName(info);
+				if (name.startsWith(profilePrefix)) {
+					currentProfile = Utils.cleanColour(name.substring(profilePrefix.length()));
+					String newProfile = new StringBuilder(currentProfile).reverse().toString();
 			setCurrentProfile(newProfile);
+				} else if (name.startsWith(skillsPrefix)) {
+					String levelInfo = name.substring(skillsPrefix.length()).trim();
+					Matcher matcher = SKILL_LEVEL_PATTERN.matcher(Utils.cleanColour(levelInfo).split(":")[0]);
+					if (matcher.find()) {
+						try {
+							int level = Integer.parseInt(matcher.group(2).trim());
+							XPInformation.getInstance().updateLevel(matcher.group(1).toLowerCase().trim(), level);
+						} catch (Exception ignored) {
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		// todo convert to api
 		for (String s : TabListUtils.getTabList()) {
