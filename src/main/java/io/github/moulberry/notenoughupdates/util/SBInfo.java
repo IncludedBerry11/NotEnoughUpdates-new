@@ -23,7 +23,6 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates;
-import io.github.moulberry.notenoughupdates.listener.ScoreboardLocationChangeListener;
 import io.github.moulberry.notenoughupdates.autosubscribe.NEUAutoSubscribe;
 import io.github.moulberry.notenoughupdates.events.SidebarChangeEvent;
 import io.github.moulberry.notenoughupdates.miscfeatures.CookieWarning;
@@ -285,11 +284,10 @@ public class SBInfo {
 	}
 
 	public void setLocation(String location) {
-		location = location == null ? location : location.intern();
-		if (!Objects.equals(mode, location)) {
-			MinecraftForge.EVENT_BUS.post(new LocationChangeEvent(location, mode));
+		if (!Objects.equals(this.mode, location)) {
+			MinecraftForge.EVENT_BUS.post(new LocationChangeEvent(location, this.mode));
 		}
-		mode = location;
+		this.mode = location;
 	}
 
 	/**
@@ -307,6 +305,7 @@ public class SBInfo {
 		return lastLocation;
 	}
 
+	private static final String profilePrefix = "\u00a7r\u00a7e\u00a7lProfile: \u00a7r\u00a7a";
 	private static final String skillsPrefix = "\u00a7r\u00a7e\u00a7lSkills: \u00a7r\u00a7a";
 	private static final String completedFactionQuests =
 		"\u00a7r \u00a7r\u00a7a(?!(Paul|Finnegan|Aatrox|Cole|Diana|Diaz|Foxy|Marina)).*";
@@ -335,10 +334,7 @@ public class SBInfo {
 			for (NetworkPlayerInfo info : Minecraft.getMinecraft().thePlayer.sendQueue.getPlayerInfoMap()) {
 				String name = Minecraft.getMinecraft().ingameGUI.getTabList().getPlayerName(info);
 				if (name.startsWith(profilePrefix)) {
-					string newProfile = Utils.cleanColour(name.substring(profilePrefix.length()));
-					if (Character.isLowerCase(newProfile.charAt(0)))
-				    newProfile = new StringBuilder(newProfile).reverse().toString();
-			        setCurrentProfile(newProfile);
+					currentProfile = Utils.cleanColour(name.substring(profilePrefix.length()));
 					hasNewTab = true;
 				} else if (name.startsWith(skillsPrefix)) {
 					String levelInfo = name.substring(skillsPrefix.length()).trim();
@@ -460,10 +456,9 @@ public class SBInfo {
 					if (line.contains("⏣")) {
 						String l = Utils.cleanColour(line).replaceAll("[^A-Za-z0-9() ]", "").trim();
 						if (!l.equals(location)) {
-						    new ScoreboardLocationChangeListener(location, l);
 							lastLocation = location;
-							location = l;
 						}
+						location = l;
 						break;
 					}
 				}
