@@ -294,7 +294,7 @@ public class SBInfo {
 	 * @return the current location as displayed on the scoreboard
 	 */
 	public @NotNull String getScoreboardLocation() {
-	    if (location == Village) {
+	    if (location == "Village") {
 	      location = "hub";
 	    }
 		return location;
