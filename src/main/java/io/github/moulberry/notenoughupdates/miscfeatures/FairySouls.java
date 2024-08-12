@@ -351,7 +351,7 @@ public class FairySouls {
 
 	public void tick() {
 		if (!trackSouls) return;
-		String location = SBInfo.getInstance().getScoreboardLocation()();
+		String location = SBInfo.getInstance().getScoreboardLocation();
 		if (location == null || location.isEmpty()) return;
 
 		if (!location.equals(currentLocation)) {
