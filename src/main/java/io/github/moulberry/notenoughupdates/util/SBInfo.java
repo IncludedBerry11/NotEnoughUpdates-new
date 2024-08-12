@@ -294,6 +294,9 @@ public class SBInfo {
 	 * @return the current location as displayed on the scoreboard
 	 */
 	public @NotNull String getScoreboardLocation() {
+	    if (location == Village) {
+	      location = "hub";
+	    }
 		return location;
 	}
 
@@ -384,9 +387,6 @@ public class SBInfo {
 			boolean containsBingo = false;
 			for (String line : lines) { //Slayer stuff
 				line = SidebarUtil.cleanTeamName(line);
-				if (line.contains("hub-")){
-				    location = "hub";
-				}
 				if (line.contains("Tarantula Broodfather")) {
 					slayer = "Tarantula";
 				} else if (line.contains("Revenant Horror")) {
