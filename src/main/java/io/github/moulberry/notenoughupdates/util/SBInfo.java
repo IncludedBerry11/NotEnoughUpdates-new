@@ -321,7 +321,7 @@ public class SBInfo {
 			Minecraft.getMinecraft().theWorld != null &&
 			locraw == null &&
 			(currentTime - joinedWorld) > 1000 &&
-			(currentTime - lastLocRaw) > 15000 && NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard) {
+			(currentTime - lastLocRaw) > 15000 && NotEnoughUpdates.INSTANCE.hasSkyblockScoreboard()) {
 			lastLocRaw = System.currentTimeMillis();
 			NotEnoughUpdates.INSTANCE.sendChatMessage("/locraw");
 		}
