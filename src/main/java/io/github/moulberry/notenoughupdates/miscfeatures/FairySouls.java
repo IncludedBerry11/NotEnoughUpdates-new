@@ -371,7 +371,7 @@ public class FairySouls {
 		if (!trackSouls || event.type == 2) return;
 
 		var cleanString = StringUtils.cleanColour(event.message.getUnformattedText());
- 		if (cleanString.equals("You have already found that Fairy Soul!") || cleanString.equals("SOUL! You found a Fairy Soul!")) {
+ 		if (cleanString.equals("You already found that Fairy Soul!") || cleanString.equals("SOUL! You found a Fairy Soul!")) {
 			markClosestSoulFound();
 		}
 	}
