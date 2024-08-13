@@ -480,9 +480,8 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-			if (mc.isSingleplayer() || mc.thePlayer.getClientBrand() == null ||
-				!mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fun")) {
-				hasSkyblockScoreboard = true;
+			if (mc.isSingleplayer() || !mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fun")) {
+				hasSkyblockScoreboard = false;
 				return;
 			}
 
