@@ -365,9 +365,20 @@ public class NotEnoughUpdates {
 	 * If the last chat message was sent <200 ago, will cache the message for #onTick to handle.
 	 */
 	public void sendChatMessage(String message) {
+		if (System.currentTimeMillis() - lastChatMessage > CHAT_MSG_COOLDOWN) {
+			secondLastChatMessage = lastChatMessage;
+			lastChatMessage = System.currentTimeMillis();
+			Minecraft.getMinecraft().thePlayer.sendChatMessage(message);
+			currChatMessage = null;
+		} else {
+			currChatMessage = message;
+		}
 	}
 
 	public void trySendCommand(String message) {
+		if (ClientCommandHandler.instance.executeCommand(Minecraft.getMinecraft().thePlayer, message) == 0) {
+			sendChatMessage(message);
+		}
 	}
 
 	public void displayLinks(JsonObject update, int totalWidth) {
@@ -449,6 +460,11 @@ public class NotEnoughUpdates {
 			openGui = null;
 			lastOpenedGui = System.currentTimeMillis();
 		}
+		if (currChatMessage != null && currentTime - lastChatMessage > CHAT_MSG_COOLDOWN) {
+			lastChatMessage = currentTime;
+			Minecraft.getMinecraft().thePlayer.sendChatMessage(currChatMessage);
+			currChatMessage = null;
+		}
 	}
 
 	public boolean isOnSkyblock() {
@@ -464,7 +480,8 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-			if (mc.isSingleplayer() || mc.thePlayer.getClientBrand() == null) {
+			if (mc.isSingleplayer() || mc.thePlayer.getClientBrand() == null ||
+				!mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fun")) {
 				hasSkyblockScoreboard = false;
 				return;
 			}
@@ -481,7 +498,7 @@ public class NotEnoughUpdates {
 				}
 			}
 
-			hasSkyblockScoreboard = true;
+			hasSkyblockScoreboard = false;
 		}
 	}
 }
