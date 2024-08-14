@@ -480,19 +480,21 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-			Scoreboard scoreboard = mc.theWorld.getScoreboard();
-			ScoreObjective sidebarObjective = scoreboard.getObjectiveInDisplaySlot(1);
-			if (sidebarObjective != null) {
-				String objectiveName = sidebarObjective.getDisplayName().replaceAll("(?i)\\u00A7.", "");
-				for (String skyblock : SKYBLOCK_IN_ALL_LANGUAGES) {
-					if (objectiveName.startsWith(skyblock)) {
-						hasSkyblockScoreboard = true;
-						return;
-					}
-				}
+			if (mc.isSingleplayer() || mc.thePlayer.getClientBrand() == null) {
+				hasSkyblockScoreboard = false;
+				return;
 			}
 
-			hasSkyblockScoreboard = false;
+			Scoreboard scoreboard = mc.theWorld.getScoreboard();
+			ScoreObjective sidebarObjective = scoreboard.getObjectiveInDisplaySlot(1);
+            if (sidebar != null) {
+                if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
+                    hasSkyblockScoreboard = true;
+                    return;
+                }
+            }
+
+			hasSkyblockScoreboard = true;
 		}
 	}
 }
