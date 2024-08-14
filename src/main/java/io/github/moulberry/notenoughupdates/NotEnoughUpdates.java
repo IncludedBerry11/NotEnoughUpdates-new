@@ -494,7 +494,7 @@ public class NotEnoughUpdates {
                 }
             }
 
-			hasSkyblockScoreboard = true;
+			hasSkyblockScoreboard = false;
 		}
 	}
 }
