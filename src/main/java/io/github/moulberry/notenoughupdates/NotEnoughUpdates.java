@@ -486,7 +486,7 @@ public class NotEnoughUpdates {
 			}
 
 			Scoreboard scoreboard = mc.theWorld.getScoreboard();
-			ScoreObjective sidebarObjective = scoreboard.getObjectiveInDisplaySlot(1);
+			ScoreObjective sidebar = scoreboard.getObjectiveInDisplaySlot(1);
             if (sidebar != null) {
                 if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
                     hasSkyblockScoreboard = true;
