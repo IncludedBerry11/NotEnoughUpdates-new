@@ -57,6 +57,7 @@ object TablistTutorial {
 
     @SubscribeEvent
     fun onGuiPostRender(event: GuiScreenEvent.DrawScreenEvent.Post) {
+       return
     }
 
     data class WidgetStatus(
@@ -66,10 +67,11 @@ object TablistTutorial {
     )
 
     fun findWidgets(chestInventory: ContainerChest): List<WidgetStatus> {
-        return null
+        return
     }
 
     private fun drawEnableEffect(gui: GuiChest, chestInventory: ContainerChest, task: TabListWidget) {
+            return
     }
 
     /*{
@@ -97,6 +99,7 @@ object TablistTutorial {
         Damage: 3s
     }*/
     fun drawPriorityClick(gui: GuiChest, chestInventory: ContainerChest, widget: WidgetStatus) {
+            return
     }
 
     fun getRegionName(label: String): String? {
