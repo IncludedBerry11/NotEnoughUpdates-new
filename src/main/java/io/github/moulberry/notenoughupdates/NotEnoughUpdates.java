@@ -481,8 +481,7 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-			if (!mc.isSingleplayer() || !mc.thePlayer.getClientBrand() == null ||
-				mc.thePlayer.getClientBrand().toLowerCase().contains("fun")) {
+			if (mc.thePlayer.getClientBrand().toLowerCase().contains("fun")) {
 				hasHypixel = true;
 			} else {
 			  hasHypixel = false;
