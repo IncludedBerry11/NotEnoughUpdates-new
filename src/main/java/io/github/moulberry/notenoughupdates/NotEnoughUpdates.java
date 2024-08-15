@@ -201,6 +201,7 @@ public class NotEnoughUpdates {
 	private long secondLastChatMessage = 0;
 	private String currChatMessage = null;
 	private File neuDir;
+	public boolean hasHypixel;
 	private boolean hasSkyblockScoreboard;
 
 	public NotEnoughUpdates() {
@@ -480,19 +481,22 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-			if (mc.isSingleplayer() || mc.thePlayer.getClientBrand() == null) {
-				hasSkyblockScoreboard = false;
-				return;
+			if (!mc.isSingleplayer() || !mc.thePlayer.getClientBrand() == null ||
+				mc.thePlayer.getClientBrand().toLowerCase().contains("fun")) {
+				hasHypixel = true;
 			}
 
 			Scoreboard scoreboard = mc.theWorld.getScoreboard();
-			ScoreObjective sidebar = scoreboard.getObjectiveInDisplaySlot(1);
-            if (sidebar != null) {
-                if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
-                    hasSkyblockScoreboard = true;
-                    return;
-                }
-            }
+			ScoreObjective sidebarObjective = scoreboard.getObjectiveInDisplaySlot(1);
+			if (sidebarObjective != null) {
+				String objectiveName = sidebarObjective.getDisplayName().replaceAll("(?i)\\u00A7.", "");
+				for (String skyblock : SKYBLOCK_IN_ALL_LANGUAGES) {
+					if (objectiveName.startsWith(skyblock)) {
+						hasSkyblockScoreboard = true;
+						return;
+					}
+				}
+			}
 
 			hasSkyblockScoreboard = false;
 		}
