@@ -28,38 +28,16 @@ object TablistTaskQueue {
     private val blacklistedLocations = setOf("dungeon", "kuudra")
 
     fun addToQueue(task: TablistTutorial.TabListWidget, showNotification: Boolean) {
-        if (showNotification && !queueContainsElements() && !blacklistedLocations.contains(SBInfo.getInstance().mode)) {
-            NotificationHandler.displayNotification(
-                listOf(
-                    "§l§4Widget missing",
-                    "§cOne or more tab list widgets, which are required for NEU to function properly, are missing",
-                    "§cOpen the Tablist Widgets settings using",
-                    "§b/tab",
-                    "§cto get some assistance in fixing this problem."
-                ),
-                false
-            )
-        }
-        if (task !in queue) {
-            // see todo in MiningOverlay.java:377
-//            Utils.addChatMessage("Adding $task")
-            queue.add(task)
-        }
     }
 
     fun removeFromQueue(task: TablistTutorial.TabListWidget) {
-        queue.remove(task)
     }
 
     fun queueContainsElements(): Boolean {
-        return queue.isNotEmpty()
+        return null
     }
 
     fun getNextQueueItem(): TablistTutorial.TabListWidget? {
-        return if (!queueContainsElements()) {
-            null
-        } else {
-            queue.removeLast()
-        }
+        return null
     }
 }
