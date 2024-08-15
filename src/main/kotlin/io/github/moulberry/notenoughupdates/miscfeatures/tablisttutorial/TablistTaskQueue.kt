@@ -28,16 +28,22 @@ object TablistTaskQueue {
     private val blacklistedLocations = setOf("dungeon", "kuudra")
 
     fun addToQueue(task: TablistTutorial.TabListWidget, showNotification: Boolean) {
+      return false
     }
 
     fun removeFromQueue(task: TablistTutorial.TabListWidget) {
+        queue.remove(task)
     }
 
     fun queueContainsElements(): Boolean {
-        return null
+        return queue.isNotEmpty()
     }
 
     fun getNextQueueItem(): TablistTutorial.TabListWidget? {
-        return null
+        return if (!queueContainsElements()) {
+            null
+        } else {
+            queue.removeLast()
+        }
     }
 }
