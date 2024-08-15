@@ -470,7 +470,7 @@ public class NotEnoughUpdates {
 
 	public boolean isOnSkyblock() {
 		if (!config.misc.onlyShowOnSkyblock) return true;
-		return hasSkyblockScoreboard();
+		return hasHypixel;
 	}
 
 	public boolean hasSkyblockScoreboard() {
@@ -484,6 +484,8 @@ public class NotEnoughUpdates {
 			if (!mc.isSingleplayer() || !mc.thePlayer.getClientBrand() == null ||
 				mc.thePlayer.getClientBrand().toLowerCase().contains("fun")) {
 				hasHypixel = true;
+			} else {
+			  hasHypixel = false;
 			}
 
 			Scoreboard scoreboard = mc.theWorld.getScoreboard();
