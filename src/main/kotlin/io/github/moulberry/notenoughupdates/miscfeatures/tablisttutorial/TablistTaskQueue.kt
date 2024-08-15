@@ -28,7 +28,13 @@ object TablistTaskQueue {
     private val blacklistedLocations = setOf("dungeon", "kuudra")
 
     fun addToQueue(task: TablistTutorial.TabListWidget, showNotification: Boolean) {
-      return false
+        if (showNotification && !queueContainsElements() && !blacklistedLocations.contains(SBInfo.getInstance().mode)) {
+        }
+        if (task !in queue) {
+            // see todo in MiningOverlay.java:377
+//            Utils.addChatMessage("Adding $task")
+            queue.add(task)
+        }
     }
 
     fun removeFromQueue(task: TablistTutorial.TabListWidget) {
