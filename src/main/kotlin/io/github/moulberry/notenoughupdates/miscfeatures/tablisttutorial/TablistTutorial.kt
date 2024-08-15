@@ -51,13 +51,72 @@ object TablistTutorial {
     )
 
     private object Arrow {
+        val imageLocation = ResourceLocation("notenoughupdates:textures/gui/tablisttutorial/arrow.png")
+        val tipXOffset = 16
+        val tipYOffset = 64
+        val labelXOffset = 58
+        val labelYOffset = 19
+        val textureSize = 64
+        val textScale = 2f
+
+        fun drawBigRedArrow(x: Int, y: Int, label: String) {
+            val imgX = x - Arrow.tipXOffset
+            val imgY = y - Arrow.tipYOffset
+            val textX = imgX + Arrow.labelXOffset
+            val textY = imgY + Arrow.labelYOffset
+
+            GlStateManager.pushMatrix()
+            GlStateManager.translate(0f, 0f, 300f)
+            GlStateManager.color(1f, 1f, 1f, 1f)
+            Minecraft.getMinecraft().textureManager.bindTexture(imageLocation)
+            RenderUtils.drawTexturedRect(imgX.toFloat(), imgY.toFloat(), textureSize.toFloat(), textureSize.toFloat())
+            GlStateManager.translate(textX.toFloat(), textY.toFloat(), 0F)
+            GlStateManager.scale(textScale, textScale, 1F)
+            val fr = Minecraft.getMinecraft().fontRendererObj
+            fr.drawString(label, 0, -fr.FONT_HEIGHT / 2, -1)
+            GlStateManager.popMatrix()
+        }
+
+        fun drawBigRedArrow(gui: GuiContainer, slot: Slot, label: String) {
+            gui as AccessorGuiContainer
+            drawBigRedArrow(gui.guiLeft + slot.xDisplayPosition + 9, gui.guiTop + slot.yDisplayPosition, label)
+        }
     }
 
     var activeTask: TabListWidget? = null
 
     @SubscribeEvent
     fun onGuiPostRender(event: GuiScreenEvent.DrawScreenEvent.Post) {
-       return
+        if (activeTask == null) {
+            activeTask = TablistTaskQueue.getNextQueueItem()
+        }
+        val task = activeTask ?: return
+
+        val gui = event.gui as? GuiChest ?: return
+        val chestInventory = gui.inventorySlots as ContainerChest
+
+        val name = chestInventory.lowerChestInventory.displayName.unformattedText
+
+        StateManagerUtils.withSavedState(AccessorGlStateManager.getLightingState()) {
+            GlStateManager.disableLighting()
+            if (name == "Tablist Widgets") {
+                drawSelectAreaArrow(gui, chestInventory, task)
+            }
+            val regionName = getRegionName(name)
+
+            // Assume the user is capable of clicking on the current region
+            if (task.regionName == "CURRENT_REGION") {
+                activeTask!!.regionName = regionName ?: return
+            }
+            if (regionName == task.regionName) {
+                drawEnableEffect(gui, chestInventory, task)
+            } else if (regionName != null) {
+                val backSlot = chestInventory.inventorySlots.getOrNull(5 * 9 + 3)
+                if (backSlot != null) {
+                    Arrow.drawBigRedArrow(gui, backSlot, "Go back!")
+                }
+            }
+        }
     }
 
     data class WidgetStatus(
@@ -67,11 +126,29 @@ object TablistTutorial {
     )
 
     fun findWidgets(chestInventory: ContainerChest): List<WidgetStatus> {
-        return
+        return chestInventory.inventorySlots.mapNotNull {
+            val name = ItemUtils.getDisplayName(it.stack)?.let(StringUtils::cleanColour) ?: return@mapNotNull null
+            if (!name.endsWith(" Widget")) {
+                return@mapNotNull null
+            }
+            val disabled = name.startsWith("✖")
+            val enabled = name.startsWith("✔")
+            if (!(enabled || disabled)) {
+                return@mapNotNull null
+            }
+            return@mapNotNull WidgetStatus(name.drop(1).removeSuffix(" Widget").trim(), enabled, it)
+        }
     }
 
     private fun drawEnableEffect(gui: GuiChest, chestInventory: ContainerChest, task: TabListWidget) {
+        val widgets = findWidgets(chestInventory)
+        val widget = widgets.find { it.widgetName == task.widgetName.toString() }
+        if (widget == null) return
+        if (widget.enabled) {
+            drawPriorityClick(gui, chestInventory, widget)
             return
+        }
+        Arrow.drawBigRedArrow(gui, widget.slot, "Click here!")
     }
 
     /*{
@@ -99,17 +176,93 @@ object TablistTutorial {
         Damage: 3s
     }*/
     fun drawPriorityClick(gui: GuiChest, chestInventory: ContainerChest, widget: WidgetStatus) {
+        val prioritySlot = chestInventory.inventorySlots.getOrNull(13) ?: return
+        val leftSide = chestInventory.inventory.getOrNull(3).let(ItemUtils::getLore)
+        val middle = chestInventory.inventory.getOrNull(4).let(ItemUtils::getLore)
+        val rightSide = chestInventory.inventory.getOrNull(5).let(ItemUtils::getLore)
+
+        val priorityList = chestInventory.inventory.getOrNull(13).let(ItemUtils::getLore)
+        val allTabListEntries = leftSide + middle + rightSide
+        val regex = activeTask?.widgetName?.regex ?: Regex.fromLiteral("${widget.widgetName}:")
+        if (allTabListEntries.any { it.replace("⬛", "").stripControlCodes().matches(regex) }) {
+            TablistAPI.lastWidgetEnabled = activeTask!!.widgetName
+            activeTask = TablistTaskQueue.getNextQueueItem()
+//            Utils.addChatMessage("Success! You enabled ${widget.widgetName}!")
             return
+        }
+        val editingIndex = priorityList.indexOfFirst { it.contains("EDITING") }
+        val widgetPriorityIndex = priorityList.indexOfFirst { it.contains("${widget.widgetName} Widget") }
+        if (editingIndex < 0 || widgetPriorityIndex < 0) {
+            return
+        }
+        if (editingIndex == widgetPriorityIndex) {
+            Arrow.drawBigRedArrow(gui, prioritySlot, "Shift Right Click")
+        } else if (editingIndex < widgetPriorityIndex) {
+            Arrow.drawBigRedArrow(gui, prioritySlot, "Left Click")
+        } else {
+            Arrow.drawBigRedArrow(gui, prioritySlot, "Right Click")
+        }
     }
 
     fun getRegionName(label: String): String? {
-        return null
+        if (!label.startsWith("Widgets")) return null
+        if (label == "Private Islands") return "Private Island"
+        return label.removePrefix("Widgets ").removePrefix("in ").removePrefix("on ")
+            .removePrefix("the ")
     }
 
     private fun drawSelectAreaArrow(gui: GuiChest, inventory: ContainerChest, task: TabListWidget) {
+        var regionName = task.regionName
+        if (regionName == "CURRENT_REGION") {
+            val infoSlot = inventory.inventory.getOrNull(4).let(ItemUtils::getLore)
+            if (infoSlot.isEmpty()) {
+                return
+            }
+            val lastLine = infoSlot.last().stripControlCodes()
+            val pattern = Regex("Click to edit (?<area>[\\w\\s]+) settings!")
+
+            val result = pattern.matchEntire(lastLine) ?: return
+            regionName = result.groups["area"]?.value!!
+            activeTask!!.regionName = regionName
+        }
+
+        val regionSlot = inventory.inventorySlots.find {
+            val name = ItemUtils.getDisplayName(it.stack)?.let(StringUtils::cleanColour) ?: ""
+            getRegionName(name) == regionName
+        } ?: return
+        Arrow.drawBigRedArrow(gui, regionSlot, "§cClick here!")
     }
 
     @SubscribeEvent
     fun onCommands(event: RegisterBrigadierCommandEvent) {
+        event.command("neutesttablisttutorial") {
+            thenArgument("region", string()) { region ->
+                thenArgument("widget", string()) { widget ->
+                    thenExecute {
+                        TablistTaskQueue.addToQueue(
+                            TabListWidget(
+                                "Dwarven Mines",
+                                TablistAPI.WidgetNames.COMMISSIONS,
+                            ),
+                            true
+                        )
+                        NotEnoughUpdates.INSTANCE.sendChatMessage("/tab")
+                    }
+                }.withHelp("Test command for showing a tab list tutorial")
+            }
+        }
+
+        event.command("neutesttablistapi") {
+            thenExecute {
+                TablistAPI.getWidgetLinesInRegion(TabListWidget("CURRENT_REGION", TablistAPI.WidgetNames.SKILLS),
+                    addToQueue = true,
+                    showNotification = true
+                )
+                    .forEach { println(it) }
+//                println("SEP")
+//                TablistAPI.getWidgetLines(TabListWidget("Dwarven Mines", TablistAPI.WidgetNames.FORGE))
+//                    .forEach { println(it) }
+            }
+        }
     }
 }
