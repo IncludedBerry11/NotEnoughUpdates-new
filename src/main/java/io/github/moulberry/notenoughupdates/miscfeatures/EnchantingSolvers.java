@@ -386,6 +386,7 @@ public class EnchantingSolvers {
 				return;
 				}
 				event.setCanceled(true);
+				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2yep");
 				return;
 			}
 		}
