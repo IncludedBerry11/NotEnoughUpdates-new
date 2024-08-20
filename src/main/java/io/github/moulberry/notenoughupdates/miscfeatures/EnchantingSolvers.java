@@ -338,6 +338,12 @@ public class EnchantingSolvers {
 			}
 
 			boolean yepClock = timerStack.getItem() == Items.clock;
+			if (timerStack.getItem() == Item.getItemFromBlock(Blocks.glowstone) ||
+				(yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
+				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron canceled!");
+				event.setCanceled(true);
+				return;
+			}
 			if (yepClock) {
 				long currentTime = System.currentTimeMillis();
 				if (currentTime - millisLastClick < 150) {
@@ -346,16 +352,38 @@ public class EnchantingSolvers {
 				}
 
 				if (chronomatronReplayIndex < chronomatronOrder.size()) {
+				NotEnoughUpdates.INSTANCE.sendChatMessage("startedcmatron");
 					String chronomatronCurrent = chronomatronOrder.get(chronomatronReplayIndex);
 					if ((!NotEnoughUpdates.INSTANCE.config.enchantingSolvers.preventMisclicks1 ||
 						chronomatronCurrent.equals(displayName) || Keyboard.getEventKey() == Keyboard.KEY_LSHIFT) &&
 						stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane) && event.slotId != 4 &&
 						event.slotId != 49) {
+						if (chronomatronCurrent.equals(displayName)) {
+						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2display");
+						}
+						if (stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane)) {
+						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2glass");
+						}
+						if (event.slotId != 4) {
+						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2s4");
+						}
+						if (event.slotId != 49) {
+						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2s49");
+						}
 						chronomatronReplayIndex++;
 						millisLastClick = currentTime;
 						event.usePickblockInstead();
+						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2done");
 						return;
-					}
+					}else{
+				event.setCanceled(true);
+				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2canceled av");
+				    return;
+				    }
+				}else{
+				event.setCanceled(true);
+				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2canceled");
+				return;
 				}
 				event.setCanceled(true);
 				return;
