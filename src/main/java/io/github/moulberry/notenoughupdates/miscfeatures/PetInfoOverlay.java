@@ -186,6 +186,8 @@ public class PetInfoOverlay extends TextOverlay {
 		xpGainHourSecondPet = xpGainHour;
 		xpGainHourLast = xpGainHour;
 		xpHourMap.clear();
+		xpGainHourLast = -1;
+		xpGainHour = -1;
 		config.selectedPet = index;
 	}
 
@@ -934,6 +936,8 @@ public class PetInfoOverlay extends TextOverlay {
 			Utils.showOutdatedRepoNotification("pets.json");
 			return;
 		}
+
+		if ("rift".equals(SBInfo.getInstance().getLocation())) return;
 
 		for (String line : TablistAPI.getWidgetLines(TablistAPI.WidgetNames.PET)) {
 			line = Utils.cleanColour(line).trim().replace(",", "");

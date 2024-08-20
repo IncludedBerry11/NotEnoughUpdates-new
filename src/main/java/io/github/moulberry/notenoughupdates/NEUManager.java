@@ -312,7 +312,7 @@ public class NEUManager {
 	 * loreWordMap. These maps are used in the searching algorithm.
 	 */
 	public void loadItem(String internalName) {
-		itemstackCache.remove(internalName);
+		removeItemFromCache(internalName);
 		try {
 			JsonObject json = getJsonFromFile(getItemFileForInternalName(internalName));
 			if (json == null) {
@@ -1522,6 +1522,7 @@ public class NEUManager {
 		if (useReplacements) useCache = false;
 		if (json == null) return new ItemStack(Items.painting, 1, 10);
 		String internalname = json.get("internalname").getAsString();
+		if ("_".equals(internalname)) useCache = false;
 
 		if (useCache) {
 			ItemStack stack = itemstackCache.get(internalname);
@@ -1686,5 +1687,10 @@ public class NEUManager {
 
 		displayNameCache.put(internalName, displayName);
 		return displayName;
+	}
+
+	public void removeItemFromCache(String internalName) {
+		itemstackCache.remove(internalName);
+		displayNameCache.remove(internalName);
 	}
 }
