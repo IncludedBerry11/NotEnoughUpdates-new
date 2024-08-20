@@ -338,8 +338,7 @@ public class EnchantingSolvers {
 			}
 
 			boolean yepClock = timerStack.getItem() == Items.clock;
-			if (timerStack.getItem() == Item.getItemFromBlock(Blocks.glowstone) ||
-				(yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
+			if ((yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
 				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron canceled!");
 				event.setCanceled(true);
 				return;
