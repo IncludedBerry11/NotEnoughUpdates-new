@@ -385,7 +385,6 @@ public class EnchantingSolvers {
 				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2canceled");
 				return;
 				}
-				return;
 			}
 		}
 		if (currentSolver == SolverType.ULTRASEQUENCER) {
