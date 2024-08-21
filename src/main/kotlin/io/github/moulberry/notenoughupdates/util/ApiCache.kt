@@ -66,10 +66,6 @@ object ApiCache {
 
         val isAvailable get() = cacheState is CacheState.FileCached
 
-        fun getCachedFuture(): CompletableFuture<String> {
-        return;
-        }
-
         /**
          * Should be called when removing / replacing a request from [cachedRequests].
          * Should only be called while holding a lock on [ApiCache].
@@ -111,7 +107,7 @@ object ApiCache {
         futureSupplier: Supplier<CompletableFuture<String>>,
         maxAge: Duration?
     ): CompletableFuture<String> {
-    return;
+    return futureSupplier.get();
     }
 
 }
