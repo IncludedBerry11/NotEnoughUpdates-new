@@ -67,6 +67,7 @@ object ApiCache {
         val isAvailable get() = cacheState is CacheState.FileCached
 
         fun getCachedFuture(): CompletableFuture<String> {
+        return;
         }
 
         /**
@@ -110,6 +111,7 @@ object ApiCache {
         futureSupplier: Supplier<CompletableFuture<String>>,
         maxAge: Duration?
     ): CompletableFuture<String> {
+    return;
     }
 
 }
