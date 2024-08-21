@@ -56,6 +56,31 @@ object ApiCache {
             CacheState.WaitingForFuture(future),
             firedAt
         ) {
+        constructor(future: CompletableFuture<String>, firedAt: TimeSource.Monotonic.ValueTimeMark) : this(
+            CacheState.WaitingForFuture(future),
+            firedAt
+        ) {
+        }
+
+        sealed interface CacheState {
+            object Disposed : CacheState
+            data class WaitingForFuture(val future: CompletableFuture<String>) : CacheState
+            data class FileCached(val file: Path) : CacheState
+        }
+
+        val isAvailable get() = cacheState is CacheState.FileCached
+
+        fun getCachedFuture(): CompletableFuture<String> {
+        }
+
+        /**
+         * Should be called when removing / replacing a request from [cachedRequests].
+         * Should only be called while holding a lock on [ApiCache].
+         * This deletes the disk cache and smashes the internal state for it to be GCd.
+         * After calling this method no other method may be called on this object.
+         */
+        internal fun dispose() {
+        }
     }
 
     private val cacheBaseDir by lazy {
