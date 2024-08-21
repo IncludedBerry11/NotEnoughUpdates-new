@@ -339,7 +339,7 @@ public class EnchantingSolvers {
 
 			boolean yepClock = timerStack.getItem() == Items.clock;
 			if ((yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
-				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron canceled!");
+				print(EnumChatFormatting.RED + "cmatron canceled!");
 				event.setCanceled(true);
 				return;
 			}
@@ -351,37 +351,37 @@ public class EnchantingSolvers {
 				}
 
 				if (chronomatronReplayIndex < chronomatronOrder.size()) {
-				NotEnoughUpdates.INSTANCE.sendChatMessage("startedcmatron");
+				print(EnumChatFormatting.GREEN + "startedcmatron");
 					String chronomatronCurrent = chronomatronOrder.get(chronomatronReplayIndex);
 					if ((!NotEnoughUpdates.INSTANCE.config.enchantingSolvers.preventMisclicks1 ||
 						chronomatronCurrent.equals(displayName) || Keyboard.getEventKey() == Keyboard.KEY_LSHIFT) &&
 						stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane) && event.slotId != 4 &&
 						event.slotId != 49) {
 						if (chronomatronCurrent.equals(displayName)) {
-						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2display");
+						print(EnumChatFormatting.GREEN + "cmatron2display");
 						}
 						if (stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane)) {
-						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2glass");
+						print(EnumChatFormatting.GREEN + "cmatron2glass");
 						}
 						if (event.slotId != 4) {
-						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2s4");
+						print(EnumChatFormatting.GREEN + "cmatron2s4");
 						}
 						if (event.slotId != 49) {
-						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2s49");
+						print(EnumChatFormatting.GREEN + "cmatron2s49");
 						}
 						chronomatronReplayIndex++;
 						millisLastClick = currentTime;
 						event.usePickblockInstead();
-						NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2done");
+						print(EnumChatFormatting.GREEN + "cmatron2done");
 						return;
 					}else{
 				event.setCanceled(true);
-				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2canceled av");
+				print(EnumChatFormatting.RED + "cmatron2canceled av");
 				    return;
 				    }
 				}else{
 				event.setCanceled(true);
-				NotEnoughUpdates.INSTANCE.sendChatMessage("cmatron2canceled");
+				print(EnumChatFormatting.RED + "cmatron2canceled");
 				return;
 				}
 			}
@@ -605,6 +605,10 @@ public class EnchantingSolvers {
 		}
 
 		processInventoryContents(true);
+	}
+	
+	private static void print(String s) {
+		Utils.addChatMessage(s);
 	}
 
 	public static boolean disableButtons() {
