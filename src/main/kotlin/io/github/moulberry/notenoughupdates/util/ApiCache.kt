@@ -56,10 +56,6 @@ object ApiCache {
             CacheState.WaitingForFuture(future),
             firedAt
         ) {
-        constructor(future: CompletableFuture<String>, firedAt: TimeSource.Monotonic.ValueTimeMark) : this(
-            CacheState.WaitingForFuture(future),
-            firedAt
-        ) {
         }
 
         sealed interface CacheState {
