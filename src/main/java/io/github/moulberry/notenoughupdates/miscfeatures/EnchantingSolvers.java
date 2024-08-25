@@ -339,11 +339,6 @@ public class EnchantingSolvers {
 			}
 
 			boolean yepClock = timerStack.getItem() == Items.clock;
-			if ((yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
-				print(EnumChatFormatting.RED + "cmatron canceled!");
-				event.setCanceled(true);
-				return;
-			}
 			if (yepClock) {
 				long currentTime = System.currentTimeMillis();
 				if (currentTime - millisLastClick < 150) {
