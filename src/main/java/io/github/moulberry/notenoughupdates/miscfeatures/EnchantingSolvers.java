@@ -345,8 +345,7 @@ public class EnchantingSolvers {
 					event.setCanceled(true);
 					return;
 				}
-
-				if (chronomatronReplayIndex < chronomatronOrder.size()) {
+				
 				print(EnumChatFormatting.GREEN + "startedcmatron");
 					String chronomatronCurrent = chronomatronOrder.get(chronomatronReplayIndex);
 					if ((!NotEnoughUpdates.INSTANCE.config.enchantingSolvers.preventMisclicks1 ||
@@ -373,13 +372,22 @@ public class EnchantingSolvers {
 					}else{
 				event.setCanceled(true);
 				print(EnumChatFormatting.RED + "cmatron2canceled av");
+
+						if (chronomatronCurrent.equals(displayName)) {
+						print(EnumChatFormatting.GREEN + "cmatron2display");
+						}
+						if (stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane)) {
+						print(EnumChatFormatting.GREEN + "cmatron2glass");
+						}
+						if (event.slotId != 4) {
+						print(EnumChatFormatting.GREEN + "cmatron2s4");
+						}
+						if (event.slotId != 49) {
+						print(EnumChatFormatting.GREEN + "cmatron2s49");
+						}
+						
 				    return;
 				    }
-				}else{
-				event.setCanceled(true);
-				print(EnumChatFormatting.RED + "cmatron2canceled");
-				return;
-				}
 			}
 		}
 		if (currentSolver == SolverType.ULTRASEQUENCER) {
