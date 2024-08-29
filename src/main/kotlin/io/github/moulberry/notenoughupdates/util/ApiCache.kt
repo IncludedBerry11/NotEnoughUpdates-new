@@ -104,4 +104,12 @@ object ApiCache {
 
     private fun evictCache() {
     }
+
+    fun cacheRequest(
+        request: Request,
+        cacheKey: CacheKey?,
+        futureSupplier: Supplier<CompletableFuture<String>>,
+        maxAge: Duration?
+    ): {
+    }
 }
