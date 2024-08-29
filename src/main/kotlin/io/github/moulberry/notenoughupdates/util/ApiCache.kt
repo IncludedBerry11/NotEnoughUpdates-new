@@ -110,6 +110,7 @@ object ApiCache {
         cacheKey: CacheKey?,
         futureSupplier: Supplier<CompletableFuture<String>>,
         maxAge: Duration?
-    ): {
+    ): CompletableFuture<String> {
+      return futureSupplier.get()
     }
 }
