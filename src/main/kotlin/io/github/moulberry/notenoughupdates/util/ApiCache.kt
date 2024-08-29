@@ -70,9 +70,6 @@ object ApiCache {
 
         val isAvailable get() = cacheState is CacheState.FileCached
 
-        fun getCachedFuture(): CompletableFuture<String> {
-        }
-
         /**
          * Should be called when removing / replacing a request from [cachedRequests].
          * Should only be called while holding a lock on [ApiCache].
@@ -143,7 +140,6 @@ object ApiCache {
                 } else {
                     // Using local cached request
                     traceApiRequest(request, null)
-                    cachedRequest.getCachedFuture()
                 }
             } else {
                 if (cachedRequest.firedAt.elapsedNow() > timeout) {
@@ -152,7 +148,6 @@ object ApiCache {
                 } else {
                     // Joining ongoing request
                     traceApiRequest(request, null)
-                    cachedRequest.getCachedFuture()
                 }
             }
         }
