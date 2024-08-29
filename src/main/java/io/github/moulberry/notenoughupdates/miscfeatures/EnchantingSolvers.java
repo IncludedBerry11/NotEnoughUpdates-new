@@ -24,7 +24,6 @@ import io.github.moulberry.notenoughupdates.autosubscribe.NEUAutoSubscribe;
 import io.github.moulberry.notenoughupdates.events.SlotClickEvent;
 import io.github.moulberry.notenoughupdates.util.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
@@ -339,55 +338,32 @@ public class EnchantingSolvers {
 			}
 
 			boolean yepClock = timerStack.getItem() == Items.clock;
+			if (timerStack.getItem() == Item.getItemFromBlock(Blocks.glowstone) ||
+				(yepClock && (!addToChronomatron || chronomatronOrder.size() < lastChronomatronSize + 1))) {
+				event.setCanceled(true);
+				return;
+			}
 			if (yepClock) {
 				long currentTime = System.currentTimeMillis();
 				if (currentTime - millisLastClick < 150) {
 					event.setCanceled(true);
 					return;
 				}
-				
-				print(EnumChatFormatting.GREEN + "startedcmatron");
+
+				if (chronomatronReplayIndex < chronomatronOrder.size()) {
 					String chronomatronCurrent = chronomatronOrder.get(chronomatronReplayIndex);
 					if ((!NotEnoughUpdates.INSTANCE.config.enchantingSolvers.preventMisclicks1 ||
 						chronomatronCurrent.equals(displayName) || Keyboard.getEventKey() == Keyboard.KEY_LSHIFT) &&
 						stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane) && event.slotId != 4 &&
 						event.slotId != 49) {
-						if (chronomatronCurrent.equals(displayName)) {
-						print(EnumChatFormatting.GREEN + "cmatron2display");
-						}
-						if (stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane)) {
-						print(EnumChatFormatting.GREEN + "cmatron2glass");
-						}
-						if (event.slotId != 4) {
-						print(EnumChatFormatting.GREEN + "cmatron2s4");
-						}
-						if (event.slotId != 49) {
-						print(EnumChatFormatting.GREEN + "cmatron2s49");
-						}
 						chronomatronReplayIndex++;
 						millisLastClick = currentTime;
 						event.usePickblockInstead();
-						print(EnumChatFormatting.GREEN + "cmatron2done");
 						return;
-					}else{
+					}
+				}
 				event.setCanceled(true);
-				print(EnumChatFormatting.RED + "cmatron2canceled av");
-
-						if (chronomatronCurrent.equals(displayName)) {
-						print(EnumChatFormatting.GREEN + "cmatron2display");
-						}
-						if (stack.getItem() != Item.getItemFromBlock(Blocks.stained_glass_pane)) {
-						print(EnumChatFormatting.GREEN + "cmatron2glass");
-						}
-						if (event.slotId != 4) {
-						print(EnumChatFormatting.GREEN + "cmatron2s4");
-						}
-						if (event.slotId != 49) {
-						print(EnumChatFormatting.GREEN + "cmatron2s49");
-						}
-						
-				    return;
-				    }
+				return;
 			}
 		}
 		if (currentSolver == SolverType.ULTRASEQUENCER) {
@@ -609,10 +585,6 @@ public class EnchantingSolvers {
 		}
 
 		processInventoryContents(true);
-	}
-	
-	private static void print(String s) {
-		Utils.addChatMessage(s);
 	}
 
 	public static boolean disableButtons() {
