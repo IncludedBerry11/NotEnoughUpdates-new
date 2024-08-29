@@ -58,11 +58,6 @@ object ApiCache {
         ) {
             future.thenAccept { text ->
                 synchronized(this) {
-                    val f = Files.createTempFile(cacheBaseDir, "api-cache", ".bin")
-                    log("Writing cache to disk: $f")
-                    f.toFile().deleteOnExit()
-                    f.writeText(text)
-                    cacheState = CacheState.FileCached(f)
                 }
             }
         }
@@ -76,19 +71,6 @@ object ApiCache {
         val isAvailable get() = cacheState is CacheState.FileCached
 
         fun getCachedFuture(): CompletableFuture<String> {
-            synchronized(this) {
-                return when (val cs = cacheState) {
-                    CacheState.Disposed -> supplyImmediate {
-                        throw IllegalStateException("Attempting to read from a disposed future. Most likely caused by non synchronized access to ApiCache.cachedRequests")
-                    }
-
-                    is CacheState.FileCached -> supplyImmediate {
-                        cs.file.readText()
-                    }
-
-                    is CacheState.WaitingForFuture -> cs.future
-                }
-            }
         }
 
         /**
@@ -102,9 +84,6 @@ object ApiCache {
     }
 
     private val cacheBaseDir by lazy {
-        val d = Files.createTempDirectory("neu-cache")
-        d.toFile().deleteOnExit()
-        d
     }
     private val cachedRequests = mutableMapOf<CacheKey, CacheResult>()
     val histogramTotalRequests: MutableMap<String, Int> = mutableMapOf()
@@ -121,47 +100,12 @@ object ApiCache {
         request: Request,
         failReason: String?,
     ) {
-        if (!NotEnoughUpdates.INSTANCE.config.hidden.dev) return
-        val callingClass = Thread.currentThread().stackTrace
-            .find {
-                !it.className.startsWith("java.") &&
-                        !it.className.startsWith("kotlin.") &&
-                        it.className != ApiCache::class.java.name &&
-                        it.className != ApiUtil::class.java.name &&
-                        it.className != Request::class.java.name
-            }
-        val callingClassText = callingClass?.let {
-            "${it.className}.${it.methodName} (${it.fileName}:${it.lineNumber})"
-        } ?: "no calling class found"
-        callingClass?.className?.let {
-            histogramTotalRequests[it] = (histogramTotalRequests[it] ?: 0) + 1
-            if (failReason != null)
-                histogramNonCachedRequests[it] = (histogramNonCachedRequests[it] ?: 0) + 1
-        }
-        if (failReason != null) {
-            log("Executing api request for url ${request.baseUrl} by $callingClassText: $failReason")
-        } else {
-            log("Cache hit for api request for url ${request.baseUrl} by $callingClassText.")
-        }
     }
 
     fun clear() {
-        synchronized(this) {
-            cachedRequests.clear()
-        }
     }
 
     private fun evictCache() {
-        synchronized(this) {
-            val it = cachedRequests.iterator()
-            while (it.hasNext()) {
-                val next = it.next()
-                if (next.value.firedAt.elapsedNow() >= globalMaxCacheAge) {
-                    next.value.dispose()
-                    it.remove()
-                }
-            }
-        }
     }
 
     fun cacheRequest(
@@ -213,5 +157,4 @@ object ApiCache {
             }
         }
     }
-
 }
