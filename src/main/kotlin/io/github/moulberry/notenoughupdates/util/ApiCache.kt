@@ -111,45 +111,6 @@ object ApiCache {
         futureSupplier: Supplier<CompletableFuture<String>>,
         maxAge: Duration?
     ): CompletableFuture<String> {
-        evictCache()
-        if (cacheKey == null) {
-            traceApiRequest(request, "uncacheable request (probably POST)")
-            return futureSupplier.get()
-        }
-        if (maxAge == null) {
-            traceApiRequest(request, "manually specified as uncacheable")
-            return futureSupplier.get()
-        }
-        fun recache(): CompletableFuture<String> {
-            return futureSupplier.get().also {
-                cachedRequests[cacheKey]?.dispose() // Safe to dispose like this because this function is always called in a synchronized block
-                cachedRequests[cacheKey] = CacheResult(it, TimeSource.Monotonic.markNow())
-            }
-        }
-        synchronized(this) {
-            val cachedRequest = cachedRequests[cacheKey]
-            if (cachedRequest == null) {
-                traceApiRequest(request, "no cache found")
-                return recache()
-            }
-
-            return if (cachedRequest.isAvailable) {
-                if (cachedRequest.firedAt.elapsedNow() > maxAge.toKotlinDuration()) {
-                    traceApiRequest(request, "outdated cache")
-                    recache()
-                } else {
-                    // Using local cached request
-                    traceApiRequest(request, null)
-                }
-            } else {
-                if (cachedRequest.firedAt.elapsedNow() > timeout) {
-                    traceApiRequest(request, "suspiciously slow api response")
-                    recache()
-                } else {
-                    // Joining ongoing request
-                    traceApiRequest(request, null)
-                }
-            }
-        }
+      traceApiRequest(request, null)
     }
 }
