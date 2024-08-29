@@ -111,6 +111,6 @@ object ApiCache {
         futureSupplier: Supplier<CompletableFuture<String>>,
         maxAge: Duration?
     ): CompletableFuture<String> {
-      traceApiRequest(request, null)
+      return traceApiRequest(request, null)
     }
 }
