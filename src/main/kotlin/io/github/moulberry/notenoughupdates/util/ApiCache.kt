@@ -98,6 +98,12 @@ object ApiCache {
          * After calling this method no other method may be called on this object.
          */
         internal fun dispose() {
+            synchronized(this) {
+                val file = (cacheState as? CacheState.FileCached)?.file
+                log("Disposing cache for $file")
+                cacheState = CacheState.Disposed
+                file?.deleteIfExists()
+            }
         }
     }
 
