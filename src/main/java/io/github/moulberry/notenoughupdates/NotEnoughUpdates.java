@@ -492,13 +492,12 @@ public class NotEnoughUpdates {
 			ScoreObjective sidebar = scoreboard.getObjectiveInDisplaySlot(1);
             if (sidebar != null) {
                 if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
-						hasSkyblockScoreboard = true;
-				} else {
-					hasSkyblockScoreboard = false;
-				}
-			} else {
+						    hasSkyblockScoreboard = true;
+									return;
+								}
+	      }
 				hasSkyblockScoreboard = false;
-			}
+			  return;
 		}
 	}
 }
