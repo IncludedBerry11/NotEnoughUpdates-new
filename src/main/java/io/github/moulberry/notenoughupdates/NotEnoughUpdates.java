@@ -492,7 +492,6 @@ public class NotEnoughUpdates {
             if (sidebar != null) {
                 if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
 						hasSkyblockScoreboard = true;
-						return;
 				} else {
 					hasSkyblockScoreboard = false;
 				}
