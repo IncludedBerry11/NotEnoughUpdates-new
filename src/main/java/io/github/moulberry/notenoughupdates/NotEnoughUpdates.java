@@ -474,6 +474,7 @@ public class NotEnoughUpdates {
 	}
 
 	public boolean hasSkyblockScoreboard() {
+	    if (config.misc.alwaysSkyblock) return true;
 		return hasSkyblockScoreboard;
 	}
 
