@@ -41,6 +41,14 @@ public class Misc {
 
 	@Expose
 	@ConfigOption(
+		name = "Always Skyblock",
+		desc = "Always show features even if not on Skyblock in Hypixel."
+	)
+	@ConfigEditorBoolean
+	public boolean alwaysSkyblock = false;
+
+	@Expose
+	@ConfigOption(
 		name = "Hide Potion Effects",
 		desc = "Hide the potion effects inside your inventory while on SkyBlock"
 	)
