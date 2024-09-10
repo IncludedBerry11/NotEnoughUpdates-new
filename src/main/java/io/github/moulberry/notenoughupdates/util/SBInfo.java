@@ -266,7 +266,11 @@ public class SBInfo {
 					if (System.currentTimeMillis() - lastManualLocRaw > 5000) event.setCanceled(true);
 					if (obj.has("gametype") && obj.has("mode") && obj.has("map")) {
 						locraw = obj;
-						setLocation(locraw.get("mode").getAsString());
+						if (locraw.get("map").getAsString() == "Dungeon") {
+						   setLocation("dungeon");
+						} else {
+						   setLocation(locraw.get("mode").getAsString());
+						}
 					}
 				}
 			} catch (Exception e) {
