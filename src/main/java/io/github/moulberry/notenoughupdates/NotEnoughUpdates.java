@@ -481,7 +481,7 @@ public class NotEnoughUpdates {
 	public void updateSkyblockScoreboard() {
 		Minecraft mc = Minecraft.getMinecraft();
 
-		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
+	  	if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
             if (!mc.isSingleplayer() && mc.thePlayer.getClientBrand() != null && mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fakepixel")) {
 				hasHypixel = true;
 			} else {
@@ -489,12 +489,14 @@ public class NotEnoughUpdates {
 			}
 
 			Scoreboard scoreboard = mc.theWorld.getScoreboard();
+			if (scoreboard != null) {
 			ScoreObjective sidebar = scoreboard.getObjectiveInDisplaySlot(1);
-            if (scoreboard != null && sidebar != null) {
-                if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
-		            hasSkyblockScoreboard = true;
-			        return;
-				}
+                if (sidebar != null) {
+                    if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
+		                hasSkyblockScoreboard = true;
+			            return;
+				    }
+		        }
 		  	}
   		}
 		hasSkyblockScoreboard = false;
