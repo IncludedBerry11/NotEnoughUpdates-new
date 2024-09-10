@@ -283,10 +283,10 @@ public class SBInfo {
 	 * @return the current mode, as returned by /locraw, usually equivalent to a skyblock public island type.
 	 */
 	public @Nullable String getLocation() {
-		if (locraw.get("mode").getAsString() == "dynamic") {
-		return locraw.get("map").getAsString().toLowerCase();
+		if (locraw != null && locraw.get("mode").getAsString() == "dynamic") {
+		  return locraw.get("map").getAsString().toLowerCase();
 		} else {
-		return mode;
+		  return mode;
 		}
 	}
 
