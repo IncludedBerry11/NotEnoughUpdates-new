@@ -266,8 +266,8 @@ public class SBInfo {
 					if (System.currentTimeMillis() - lastManualLocRaw > 5000) event.setCanceled(true);
 					if (obj.has("gametype") && obj.has("mode") && obj.has("map")) {
 						locraw = obj;
-						if (locraw.get("map").getAsString() == "Dungeon") {
-						   setLocation("dungeon");
+						if (locraw.get("mode").getAsString() == "dynamic") {
+						   setLocation(locraw.get("map").getAsString().toLowerCase());
 						} else {
 						   setLocation(locraw.get("mode").getAsString());
 						}
