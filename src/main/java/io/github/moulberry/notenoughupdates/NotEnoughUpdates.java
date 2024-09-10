@@ -482,7 +482,7 @@ public class NotEnoughUpdates {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		if (mc != null && mc.theWorld != null && mc.thePlayer != null) {
-      if (!mc.isSingleplayer() && mc.thePlayer.getClientBrand() != null && mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fakepixel")) {
+            if (!mc.isSingleplayer() && mc.thePlayer.getClientBrand() != null && mc.thePlayer.getClientBrand().toLowerCase(Locale.ROOT).contains("fakepixel")) {
 				hasHypixel = true;
 			} else {
 				hasHypixel = false;
@@ -490,12 +490,12 @@ public class NotEnoughUpdates {
 
 			Scoreboard scoreboard = mc.theWorld.getScoreboard();
 			ScoreObjective sidebar = scoreboard.getObjectiveInDisplaySlot(1);
-            if (sidebar != null) {
+            if (scoreboard != null && sidebar != null) {
                 if (EnumChatFormatting.getTextWithoutFormattingCodes(sidebar.getDisplayName()).contains("SKYBLOCK")) {
-						    hasSkyblockScoreboard = true;
-									return;
-								}
-		  		}
+		            hasSkyblockScoreboard = true;
+			        return;
+				}
+		  	}
   		}
 		hasSkyblockScoreboard = false;
 	}
