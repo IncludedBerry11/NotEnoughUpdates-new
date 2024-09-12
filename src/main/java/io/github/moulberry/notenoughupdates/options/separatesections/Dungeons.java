@@ -32,6 +32,14 @@ import io.github.moulberry.moulconfig.annotations.ConfigOption;
 
 public class Dungeons {
 
+    @Expose
+	@ConfigOption(
+		name = "Always Dungeons",
+		desc = "Sets the location detector to set the current location as Dungeons"
+	)
+	@ConfigEditorBoolean
+	public boolean alwaysDungeons = false;
+
 	@ConfigOption(
 		name = "Dungeon Map",
 		desc = ""
