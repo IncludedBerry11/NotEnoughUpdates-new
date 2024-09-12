@@ -266,8 +266,8 @@ public class SBInfo {
 					if (System.currentTimeMillis() - lastManualLocRaw > 5000) event.setCanceled(true);
 					if (obj.has("gametype") && obj.has("mode") && obj.has("map")) {
 						locraw = obj;
-						if (locraw.get("mode").getAsString() == "dynamic") {
-						   setLocation(locraw.get("map").getAsString().toLowerCase());
+						if (NotEnoughUpdates.INSTANCE.config.dungeons.alwaysDungeons) {
+						   setLocation("dungeon");
 						} else {
 						   setLocation(locraw.get("mode").getAsString());
 						}
@@ -283,11 +283,7 @@ public class SBInfo {
 	 * @return the current mode, as returned by /locraw, usually equivalent to a skyblock public island type.
 	 */
 	public @Nullable String getLocation() {
-		if (locraw != null && locraw.get("mode").getAsString() == "dynamic") {
-		  return locraw.get("map").getAsString().toLowerCase();
-		} else {
 		  return mode;
-		}
 	}
 
 	public void setLocation(String location) {
